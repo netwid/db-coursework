@@ -1,0 +1,313 @@
+basePath: /api
+definitions:
+  api.auth:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  api.buy:
+    properties:
+      amount:
+        type: integer
+      stock_id:
+        type: integer
+    type: object
+  api.ticket:
+    properties:
+      content:
+        type: string
+      title:
+        type: string
+    required:
+    - content
+    - title
+    type: object
+  repository.Category:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  repository.FullStock:
+    properties:
+      category_id:
+        type: integer
+      currency:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  repository.PortfolioItem:
+    properties:
+      amount:
+        type: integer
+      category:
+        type: string
+      category_id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: integer
+    type: object
+  repository.Price:
+    properties:
+      date:
+        type: string
+      price:
+        type: integer
+    type: object
+  repository.Profile:
+    properties:
+      age:
+        type: integer
+      country:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      surname:
+        type: string
+    type: object
+  repository.Stock:
+    properties:
+      category_id:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+host: ab73-95-161-221-55.ngrok-free.app
+info:
+  contact: {}
+  description: TradePulse API
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: TradePulse API
+  version: "1.0"
+paths:
+  /buy:
+    post:
+      parameters:
+      - description: Data JSON Object
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/api.buy'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - stock
+  /categories:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/repository.Category'
+            type: array
+      tags:
+      - stock
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data JSON Object
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/api.auth'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      tags:
+      - auth
+  /portfolio:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/repository.PortfolioItem'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - portfolio
+  /profile:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.Profile'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - profile
+    put:
+      parameters:
+      - description: Data JSON Object
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/repository.Profile'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - profile
+  /refresh:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data JSON Object
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/api.auth'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      tags:
+      - auth
+  /stocks:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/repository.Stock'
+            type: array
+      tags:
+      - stock
+  /stocks/{id}:
+    get:
+      parameters:
+      - description: Stock ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.FullStock'
+      tags:
+      - stock
+  /stocks/{id}/price:
+    get:
+      parameters:
+      - description: Stock ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/repository.Price'
+            type: array
+      tags:
+      - stock
+  /ticket:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data JSON Object
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/api.ticket'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - ticket
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
